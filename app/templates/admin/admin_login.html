@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BmbxuPwQa2lc/FVzBcNJ7UAyJxM6wuqIj61tLrc4wSX0szH/Ev+nYRRuWlolflfl" crossorigin="anonymous">
+
+        <title>Admin Login</title>
+        <style>
+            @import url('https://fonts.googleapis.com/css2?family=Merienda&family=Spartan&display=swap');
+            body{
+                background-color: rgb(247, 247, 247);
+                font-family: 'Spartan', sans-serif;
+            }
+            .main-form{
+                margin-top: 30%;
+                background:white;
+                padding: 4%;
+                border-radius: 5px;
+                position: relative;
+            }
+            .login{
+                border-width: 2px;
+                margin-top:10px;
+                width: 100%;
+            }
+            .logo{
+                position:relative;
+                font-size: 30px;
+                font-weight: bold;
+                top:-70px;
+                font-family: 'Merienda', cursive;
+            }
+            @media only screen and (min-width: 700px){
+            .main-form{
+                margin-top:15%;
+                margin-left: 22%;
+            }
+            }
+        </style>
+    </head>
+    <body>
+        <div class="container">
+            <!-- div for form content -->
+
+            <div class="col-sm-7 main-form">
+                <div class="logo"><span style="color:green;"">Kleen</span><spa>&</span><span style="color:orange">Tidy</span></div>
+
+                <!-- main form  -->
+                <div class="admin_login">
+                    <div class="text-center">
+                        <h3>Admin Login</h3>
+                    </div>
+                    <div class="feilds">
+                            <form action="/admin/authenticate" method="post">
+                            <label for="adminid">Admin ID</label>
+                            <input type="text" name = "adminid" class = "form-control" id="adminid">
+                            <label for="adminpas">Password</label>
+                            <input type = "password" name = "adminpass" id = "adminpass" class="form-control">
+                            <button type="submit" class="btn btn-outline-success login">Login</button>
+                            <!-- <input type="su" -->
+                        </form>
+                    </div>
+
+                </div>
+
+            </div>
+        </div>
+
+
+
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/js/bootstrap.bundle.min.js" integrity="sha384-b5kHyXgcpbZJO/tY9Ul7kGkf1S0CWuKcCD38l8YkeH8z8QjE0GmW1gYU5S9FOnJ0" crossorigin="anonymous"></script>
+    </body>
+</html>

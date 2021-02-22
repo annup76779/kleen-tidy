@@ -1,0 +1,112 @@
+@import url('https://fonts.googleapis.com/css2?family=Merienda&family=Spartan&display=swap');
+*{
+    padding:0px;
+    margin: 0px;
+}
+.logo{
+    font-size: 20px;
+    font-weight: bold;
+    font-family: 'Merienda', cursive;
+}
+body{
+    background-color: white;
+    color: #616366;
+    font-family: 'Spartan', sans-serif;
+    font-size: 15px;
+}
+.menu-item li a{
+    color:#393e46!important;
+}
+.navbar{
+    background:white;
+    box-shadow: 0px 10px 20px 1px #eeeeee;
+}
+.head{
+    width:100%;
+    text-align:center;
+    color: #393e46;
+}
+.head-1{
+    color: #393e46;
+    font-size:20px;
+    font-weight: bold;
+}
+
+.icons i{
+    margin-left:20px;
+}
+.opbox{
+    background-color: #eeeeee;
+    height:100px;
+    text-align: center;
+    font-weight: bold;
+    padding-top:40px;
+    margin-top:2px;
+    margin-bottom:2px;
+}
+#footer{
+    border-top: 3px solid #e2e2e2!important;
+    background-color: #eeeeee;
+    margin-top:8px;
+}
+.container-fluid a{
+    text-decoration:none;
+    color:#393e46
+}
+.container-fluid a:hover{
+    text-decoration: none;
+    color:#393e46;
+    border-bottom: 1px solid skyblue;
+}
+#footer a{
+    text-decoration: none;
+    color:#393e46
+}
+#footer a:hover{
+    border-bottom: 1px solid skyblue;
+}
+/* making container to be 100% here */
+.container{
+    width:100%;
+}
+.form-body{
+    width:100%;
+    margin-top: 2%;
+    padding:3%;
+    background:#eeeeee;
+    border-radius: 2px;
+}
+.contact-number-feild{
+    float: left;
+    width: 100%;
+    display:inline-flex;
+}
+.contact-number-feild #code{
+    width:25%;
+}
+.contact-number-feild #number{
+    width:75%;
+}
+.added-item{
+    border:2px solid #eeeeee;margin-top:2%;
+    overflow-y: scroll;
+    height:500px;
+}
+.added-item::-webkit-scrollbar{
+    background:none;
+    width:0px;
+}
+@media only screen and (min-width: 600px){
+    .form-body{
+        padding:5%;
+    }
+}
+
+@media only screen and (min-width: 992px){
+    .opbox{
+        margin:40px;
+    } 
+    .added-item{
+        margin-left: 2%;
+    }
+}

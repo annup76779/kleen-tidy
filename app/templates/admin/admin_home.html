@@ -4,21 +4,31 @@
     <!-- row1 -->
     <div class="row" style="margin-top:4%;">
         <div class="col-lg-1 space-div"></div>
-        <a href="/admin/view/jobs" class="opbox col-lg-2">Jobs</a>
+        
+        <a href="/admin/view/jobs/1" class="opbox col-lg-2">Jobs</a>
         <a href="/admin/view/contractor" class="opbox col-lg-3">Contractor Details</a>
-        <a href="/logout"  class="opbox col-lg-2">Logout</a>
+        <a href="/admin/add/jobs" class="opbox col-lg-2">Add Jobs</a>
     </div>
     <!-- row2 -->
     <div class="row">
         <div class="col-lg-1 space-div"></div>
         <div class="col-lg-2"></div>
-        <a href="/admin/add/jobs" class="opbox col-lg-2">Add Jobs</a>
         <a href="/admin/add/contractor"  class="opbox col-lg-2">Add Contractor</a>
+        <a href="/logout/admin"  class="opbox col-lg-2">Logout</a>
     </div>
 </div>
 <style>
     .space-div{
         margin-left:4%;
     }
+    .container-fluid a{
+    text-decoration:none;
+    color:#393e46
+}
+.container-fluid a:hover{
+    text-decoration: none;
+    color:#393e46;
+    border-bottom: 1px solid skyblue;
+}
 </style>
 {% endblock%}

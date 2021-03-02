@@ -1,0 +1,37 @@
+{% extends '/general/layout.html' %}
+{% block body %}
+<style>
+    .main-form{
+        background-color: rgb(243, 243, 243);
+        border-radius: 2px;
+    }
+</style>
+    <div class="container mt-3">
+        <div class="row pt-4">
+            <div class="col-md-3"></div>
+            <!-- main form feild -->
+            <div class="col-md-6 p-4 main-form">
+                <!-- Heading  -->
+                <div class="head-2 mb-4">Sub-Contractor Login</div>
+                <!--feild to show the flashed messages-->
+                <div class="col-md-12">
+                    <div class="row alert-box"></div>
+                </div>
+                <!--form -feild-->
+                <form action="/contractor/authentication" method="post">
+                    <label for="userid">User Id or Email</label>
+                    <input type="text" name="userid" required id="userid" class="form-control" oninvalid="setCustomValidity('Please enter user id or email.')" oninput="setCustomValidity('')">
+
+                    <label for="password">Password</label>
+                    <input type="password" required name="password" id="password" class="form-control" oninvalid="setCustomValidity('Enter your password')" oninput="setCustomValidity('')">
+                    
+                    <button class="btn btn-success my-3">Login</button>
+                </form>
+                <span class="text-primary btn-block">Forgot Password?</span>
+                <span>Please contact Admin on <a href="tel:+91 8726771497">+91 8726771497</a></span>
+
+            </div>
+            <div class="col-md-3"></div>
+        </div>
+    </div>
+{% endblock  %}

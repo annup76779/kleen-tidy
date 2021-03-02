@@ -5,7 +5,7 @@
         <div class="row">
             <div class="col-lg-7 form-body">
                 <div class="head-1" style="text-align: center; width: 100%;">Add Jobs</div>
-                <form action="/admin/add/jobs" method="get">
+                <form action="/admin/post/jobs" method="post" id="add-jobs">
                     <label for="title">Job Title</label> <!--Taking Job title-->
                     <input type="text" name="title" required id="title" class="form-control" oninvalid="this.setCustomValidity('A jobs must have its title')" oninput="setCustomValidity('')">
                                     
@@ -20,13 +20,13 @@
                         <div class ="row">
                             <div class="contact-number-feild">
                             <div id="code"><!--Taking the country code of the client-->
-                                <select name="country-code" class= "form-control" oninvalid="this.setCustomValidity('Choose country')" id="contact">
+                                <select name="country-code" class= "form-control" oninvalid="this.setCustomValidity('Choose country')" oninput="setCustomValidity('')" id="contact">
                                     <option value="+91" selected>India</option>
-                                    <option value="+61" selected>Australia</option>
+                                    <option value="+61">Australia</option>
                                 </select>
                             </div>
                             <div id="number"><!--Taking client number-->
-                                <input type="number" onchange="validate_contact(document.getElementById('contact'), this)" required name="number" class="form-control">
+                                <input type="number" oninput="validate_contact(document.getElementById('contact').value, this)" required name="number" class="form-control">
                             </div>
                             </div>
                         </div>
@@ -38,20 +38,24 @@
                     <label for="address">Client Address</label><!--Taking Client Address-->
                     <textarea name="address" required id="address" class="form-control" oninvalid="this.setCustomValidity('Enter the address')" oninput="setCustomValidity('')" rows="2"></textarea>
                     
-                    <label for="details">Client Note <span style="font-size: 10px;">(optional)</span> </label><!--Taking any note by the project-->
-                    <textarea name="details" required id="details" class="form-control"></textarea>
+                    <label for="note">Client Note <span style="font-size: 10px;">(optional)</span> </label><!--Taking any note by the project-->
+                    <textarea name="note" id="note" class="form-control"></textarea>
 
-                    <button class="btn btn-outline-success" style="width:100%; margin: 5px;">Add Jobs</button>
+                    <button class="btn btn-outline-success" style="width:100%; margin: 5px;margin-left:0px;">Add Jobs</button>
 
                 </form>
             </div>
             
             <!--Creating the lis to all the added jobs-->
-            <div class="col-lg-4 added-item">
-                <div class="head-1" style="text-align: center;position: sticky;width: 100%;top:0px;z-index:10;display:block;background-color:white;">Added Jobs</div>
-                <div class="items">
-                    <div class="row mt-3">
-                        <div class="col-lg-12 text-center" id="nojob">No Jobs Added</div>
+            <div class="col-lg-4 mt-4">
+                <div class="col-lg-12 head-1" style="text-align: center;width: 100%;background-color:white;">Added Sub-Contractors</div>
+                <div class="row added-item">
+                    <div class="col-lg-12">
+                        <div class="items">
+                            <div class="row mt-3">
+                                <div class="col-lg-12 text-center" id="nojob">No Jobs Added</div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>

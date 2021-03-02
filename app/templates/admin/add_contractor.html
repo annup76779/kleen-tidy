@@ -1,0 +1,60 @@
+{% extends '/admin/layout.html' %}
+{% block body %}
+    
+    <div class="container mt-5">
+        <div class="row">
+            <div class="col-lg-7 form-body">
+                <div class="head-1" style="text-align: center; width: 100%;">Add Sub-Contractor</div>
+                <form action="/admin/post/contractor" method="post" id="add-contractor">
+                    <label for="business">Business/Contact Name</label> <!--Taking Job title-->
+                    <input type="text" name="business_contact_name" required id="business" class="form-control">
+
+                    <label for="abn">ABN Number</label><!--Taking Client name of a job-->
+                    <input type="number" name="abn" required id="abn" class="form-control" oninvalid="this.setCustomValidity('ABN Number Should be of 11 digits')" oninput="validateABN(this)">
+                
+                    <label for="contact">Mobile Number</label><!--Taking contact number of the client-->
+                    <div class="col-lg-12">
+                        <div class ="row">
+                            <div class="contact-number-feild">
+                            <div id="code"><!--Taking the country code of the client-->
+                                <select name="country-code" class= "form-control" oninvalid="this.setCustomValidity('Choose country')" oninput="validate_contact(this.value, document.getElementById('contact-number'))" id="contact">
+                                    <option value="+91" selected>India</option>
+                                    <option value="+61">Australia</option>
+                                </select>
+                            </div>
+                            <div id="number"><!--Taking client number-->
+                                <input type="number" id="contact-number" oninput="validate_contact(document.getElementById('contact').value, this)" required name="contact-no" class="form-control">
+                            </div>
+                            </div>
+                        </div>
+                    </div>
+                    <label for="email">Email</label><!--Taking Client name of a job-->
+                    <input type="email" name="email" required id="email" class="form-control" oninvalid="this.setCustomValidity('Enter contractor\'s email')">
+                    
+                    <label for="address">Address</label><!--Taking Client Address-->
+                    <textarea name="address" required id="address" class="form-control" oninvalid="this.setCustomValidity('Enter the address')" oninput="setCustomValidity('')" rows="2"></textarea>
+
+                    <button class="btn btn-outline-success" style="width:100%; margin: 5px;margin-left:0px;">Add Contractor</button>
+
+                </form>
+            </div>
+            
+            <!--Creating the list to all the added jobs-->
+            <div class="col-lg-4 mt-4">
+                <div class="col-lg-12 head-1" style="text-align: center;width: 100%;background-color:white;">Added Sub-Contractors</div>
+                <div class="row added-item">
+                    <div class="col-lg-12">
+                        <div class="items">
+                            <div class="row mt-3">
+                                <div class="col-lg-12 text-center" id="nojob">No Jobs Added</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+        
+    </div>
+
+{% endblock %}

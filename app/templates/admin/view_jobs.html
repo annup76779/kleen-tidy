@@ -1,0 +1,294 @@
+{% extends '/admin/layout.html' %}
+{% block body %}
+
+<div class="filter-box">
+    <div class="filter-item">
+        <label for="filter">Filter</label>
+        <select name="filter" value="{{value}}" onchange="filter_jobs(this.value)" id="filter" class="form-control">
+            <option value="1">All Jobs</option>
+            <option value="2">Jobs Posted Today</option>
+            <option value="3">Active Jobs</option>
+            <option value="4">Completed Jobs</option>
+            <option value="5">Reassigned Jobs</option>
+            <option value="6">To-do Today</option>
+        </select>
+    </div>
+</div>
+
+<div class="col-sm-12 table-responsive mt-5">
+    <div class="row">
+        <div class="col-lg-9 head-1 title-job" >{{title}} List<!--To be canged by jinja while filtering--></div>
+    </div>
+    <table class="table table-hover">
+        <thead>
+            <tr>
+                <th scope="col">Job ID</th>
+                <th scope="col">Job Title</th>
+                <th scope="col">Client Name</th>
+                <th scope="col">Client Contact</th>
+                <th scope="col">Work-Date</th>
+                <th scope="col">View</th>
+                <th scope="col">Edit</th>
+                <th scope="col">Delete</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <th scope="row">1</th>
+                <td>Mark</td>
+                <td>Otto</td>
+                <td>@mdo</td>
+                <td>04/04/2021</td>
+                <td><a href =  "#view" onclick="openViewModal(1,this)">View</a></td>
+                <td><a href="#edit" onclick="openEditModal(1,this)">Edit</a></td>
+                <td><a href="#del">Delete</a></td>
+            </tr>
+            <tr>
+                <th scope="row">2</th>
+                <td>Jacob</td>
+                <td>Thornton</td>
+                <td>@fat</td>
+                <td>04/04/2021</td>
+                <td><a href =  "#view" onclick="openViewModal(2,this)">View</a></td>
+                <td><a href="#edit" onclick="openEditModal(2,this)">Edit</a></td>
+                <td><a href="#del">Delete</a></td>
+            </tr>
+            <tr>
+                <th scope="row">3</th>
+                <td >Larry the Bird</td>
+                <td >Larry the Bird</td>
+                <td>@twitter</td>
+                <td>04/04/2021</td>
+                <td><a href =  "#view" onclick="openViewModal(3,this)">View</a></td>
+                <td><a href="#edit" onclick="openEditModal(3,this)">Edit</a></td>
+                <td><a href="#del">Delete</a></td>
+            </tr>
+            <tr>
+                <th scope="row">1</th>
+                <td>Mark</td>
+                <td>Otto</td>
+                <td>@mdo</td>
+                <td>04/04/2021</td>
+                <td><a href =  "#view" onclick="openViewModal(1,this)">View</a></td>
+                <td><a href="#edit" onclick="openEditModal(1,this)">Edit</a></td>
+                <td><a href="#del">Delete</a></td>
+            </tr>
+            <tr>
+                <th scope="row">2</th>
+                <td>Jacob</td>
+                <td>Thornton</td>
+                <td>@fat</td>
+                <td>04/04/2021</td>
+                <td><a href =  "#view" onclick="openViewModal(2,this)">View</a></td>
+                <td><a href="#edit" onclick="openEditModal(2,this)">Edit</a></td>
+                <td><a href="#del">Delete</a></td>
+            </tr>
+            <tr>
+                <th scope="row">3</th>
+                <td >Larry the Bird</td>
+                <td >Larry the Bird</td>
+                <td>@twitter</td>
+                <td>04/04/2021</td>
+                <td><a href =  "#view" onclick="openViewModal(3,this)">View</a></td>
+                <td><a href="#edit" onclick="openEditModal(3,this)">Edit</a></td>
+                <td><a href="#del">Delete</a></td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+
+
+<!-- Modal to view jobs -->
+<div class="modal fade" id="viewJobsModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+<div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+    <div class="modal-content">
+    <div class="modal-header">  
+        <h5 class="modal-title head-1 text-success" id="exampleModalLabel">Job Id: 78</h5><!--change the color of text by the status in Database-->
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <div class="modal-body">
+        <div class="col-lg-12">
+            <div class="row mt-1">
+                <span style="font-weight: bold;">Job Title: </span><span id="job-title">&nbsp;Glass Clean</span>
+            </div>
+            <div class="row mt-1">
+                <span style="font-weight: bold;">Client Name: </span><span id="client-name">&nbsp;Abhinav Srivastava</span>
+            </div>
+            <div class="row mt-1">
+                <span style="font-weight: bold;">Contact Number: </span><a href='tel:8948018686' id="contact-number">&nbsp;8948018686</a>
+            </div>
+            <div class="row mt-1">
+                <span style="font-weight: bold;">Work Date:</span><span id="work_date">&nbsp;04/04/2021</span>
+            </div>
+            <div class="row mt-1">
+                <span style="font-weight: bold;">Job Details:</span>
+                <p id="job-details">Hey there you have to clean all the widnow glasses in my building including glasses inside the rooms </p>
+            </div>
+            <div class="row mt-1">
+                <span style="font-weight: bold;">Client Note:</span>
+                <p id="note">Hey there you have to clean all the widnow glasses in my building including glasses inside the rooms </p>
+            </div>
+            <div class="row mt-1">
+                <span style="font-weight: bold;">Address:</span>
+                <p id="Address">Shakti Nagar, Pure Ishwarnath.</p>
+            </div>
+            <div class="row mt-1">
+                <span style="font-weight: bold;">Posted on: </span><span id="contact-number">&nbsp;02/04/2021</span>
+            </div>
+            <div class="row mt-1">
+                <span style="font-weight: bold;">Status: </span><span id="status">&nbsp;Accepted</span>
+            </div>
+            <div class="row mt-1">
+                <span style="font-weight: bold;">Contractor Id: </span><span id="contactorid">&nbsp;anup76779#</span>
+            </div>
+            <div class="row mt-1">
+                <span style="font-weight: bold;">Person: </span><span id="contactorid">&nbsp;Awantika Yadav</span>
+            </div>
+            <div class="row mt-1">
+                <span style="font-weight: bold;">ABN Number: </span><span id="abn">&nbsp;1234567891234567</span>
+            </div>
+            <div class="row mt-1">
+                <span style="font-weight: bold;">Email: </span><a href="mailto:annup76779@gmail.com" id="email">&nbsp;annup76779@gmail.com</a>
+            </div>
+            <div class="row mt-1">
+                <span style="font-weight: bold;">Sub-Contractor Cont. No.: </span><a href="tel:8726771497" id="sccontact">&nbsp;8726771497</a>
+            </div>
+            <div class="row mt-1">
+                <span style="font-weight: bold;">Sub-Contractor Address: </span>
+                <p id="abn">Dahilamau, Pratapgarh, UP</p>
+            </div>
+        </div>
+
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary" data-dismiss="modal" onclick="openEditModal(3)">Edit</button>
+    </div>
+    </div>
+</div>
+</div>
+  
+<!-- Modal to edit Jobs-->
+<div class="modal fade" id="staticBackdrop-edit-jobs" data-backdrop="static" data-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+<div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+    <div class="modal-content">
+    <div class="modal-header">
+        <h5 class="modal-title text-success head-1" id="staticBackdropLabel">Job Id: 67</h5>
+        
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <div class="modal-body">
+        <span class="data-load"></span>
+        <div class="head-1" style="text-align: center; width: 100%;">Add Jobs</div>
+                <form action="/admin/view/jobs" method="post" id="add-jobs">
+                    <label for="title">Job Title</label> <!--Taking Job title-->
+                    <input type="text" name="title" required id="title" class="form-control" oninvalid="this.setCustomValidity('A jobs must have its title')" oninput="setCustomValidity('')">
+                                    
+                    <label for="client">Client Name</label><!--Taking Client name of a job-->
+                    <input type="text" name="client" required id="client" class="form-control" oninvalid="this.setCustomValidity('Enter Client Name')" oninput="setCustomValidity('')">
+                    
+                    <label for="work-date">Work Date</label><!--Taking work date-->
+                    <input type="date" class="form-control" required name="work_date" id="work-date" oninvalid="this.setCustomValidity('Enter the work date of the Job.')" oninput="setCustomValidity('')">
+
+                    <label for="contact">Client Contact Number</label><!--Taking contact number of the client-->
+                    <div class="col-lg-12">
+                        <div class ="row">
+                            <div class="contact-number-feild">
+                            <div id="code"><!--Taking the country code of the client-->
+                                <select name="country-code" class= "form-control" oninvalid="this.setCustomValidity('Choose country')" oninput="setCustomValidity('')" id="contact">
+                                    <option value="+91" selected>India</option>
+                                    <option value="+61">Australia</option>
+                                </select>
+                            </div>
+                            <div id="number"><!--Taking client number-->
+                                <input type="number" oninput="validate_contact(document.getElementById('contact').value, this)" required name="number" class="form-control">
+                            </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <label for="details">Job Details</label><!--Taking details of a job-->
+                    <textarea name="details" required id="details" class="form-control" oninvalid="this.setCustomValidity('Please enter the details of this job')" oninput="setCustomValidity('')"></textarea>
+
+                    <label for="address">Client Address</label><!--Taking Client Address-->
+                    <textarea name="address" required id="address" class="form-control" oninvalid="this.setCustomValidity('Enter the address')" oninput="setCustomValidity('')" rows="2"></textarea>
+                    
+                    <label for="note">Client Note <span style="font-size: 10px;">(optional)</span> </label><!--Taking any note by the project-->
+                    <textarea name="note" id="note" class="form-control"></textarea>
+
+                    <button type='submit' class="btn btn-outline-success" style="width:100%; margin: 5px;margin-left: 0px;">Add Jobs</button>
+
+                </form>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+    </div>
+    </div>
+</div>
+</div>
+
+  
+<i class="fa fa-arrow-up back-to-top" title="back to top"></i>
+<style>
+    .filter-box{
+        position: relative;
+    }
+    .filter-item{
+        position: absolute;
+        right:0px;
+        width:200px;
+        z-index: 1;
+    }
+</style>
+<script>
+    // edit jobs details modal function
+    function openEditModal(jobid, el = null){
+        $('#add-jobs *').prop('disabled', true);
+        $(".data-load").css("color","skyblue");
+        $(".data-load").html("Loading...");
+        $("#title").val("Anurag");
+        $("#staticBackdrop-edit-jobs").modal("show");
+        return false;
+    }
+
+    // view jobs details function
+    function openViewModal(jobid, el){
+        $("#viewJobsModal").modal("show");
+        return false;
+    }
+
+    // view jobs funtions- which will be further used to send request for data for different jobs filter
+    function filter_jobs(value){
+        // value is the value for filter
+        title_dict = {
+            "1": "All Jobs", "2":"Jobs Posted Today","3": "Active Jobs", "4":"Completed Jobs", "5":"Reassigned Jobs", "6":"To-do Today"
+        }
+        window.history.pushState({jobtype:value}, title_dict[value], '/admin/view/jobs/'+value);
+        document.title = title_dict[value];
+        $(".title-job").html(title_dict[value]+" List");
+    }
+
+    window.onload = function(event){
+        title_dict = {
+            "1": "All Jobs", "2":"Jobs Posted Today","3": "Active Jobs", "4":"Completed Jobs", "5":"Reassigned Jobs", "6":"To-do Today"
+        }  
+        var value = {{value|tojson}};
+        // $(".title-job").html(title_dict[value] +" List");
+        $("#filter").val(value);
+    }
+
+    window.addEventListener("popstate",function(event){
+        title_dict = {
+            "1": "All Jobs", "2":"Jobs Posted Today","3": "Active Jobs", "4":"Completed Jobs", "5":"Reassigned Jobs", "6":"To-do Today"
+        }
+        val = event.state.jobtype;
+        // alert(val)
+        $(".title-job").html(title_dict[val] +" List");
+        $("#filter").val(val);
+    });
+</script>
+{% endblock  %}

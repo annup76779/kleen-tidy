@@ -1,0 +1,197 @@
+{% extends '/admin/layout.html' %}
+
+{% block body %}
+<style>
+    .border-info{
+        box-shadow: 0px 0px 8px 0px rgb(205, 242, 255);
+    }
+    .progress{
+        height:5px;
+        margin-bottom: 18px;
+    }
+    .job-card{
+        min-height: 500px;
+        max-height: 800px;
+        overflow-y:auto;
+        box-shadow: 0px 0px 8px 0px rgb(219, 219, 219);
+    }
+    .job-card::-webkit-scrollbar{
+        width:6px;
+    }
+    .job-card::-webkit-scrollbar-thumb{
+        background-color:rgb(175, 175, 175);
+    }
+    .job-card::-webkit-scrollbar-track{
+        background-color: rgb(223, 223, 223);
+    }
+    .btn{
+        border-radius:0px;
+    }
+</style>
+    <div class="container-lg mt-5">
+        <div class="row">
+            <!--profile divsion-->
+            <div class="col-lg-4">
+                <div class="card border-info mb-3">
+                    <div class="card-header bg-info head-1" style="color: white;">
+                        ID - {{profile.get("userid")}}
+                    </div>
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item">
+                            <div class="head-2">Business/Contact Name</div>
+                            <span>{{profile.get("business/contact")}}</span>
+                        </li>
+                        <li class="list-group-item">
+                            <div class="head-2">ABN Number</div>
+                            <span>{{profile.get("ABN")}}</span>
+                        </li>
+                        <li class="list-group-item">
+                            <div class="head-2">Contact Number</div>
+                            <span>{{profile.get("mb_no")}}</span>
+                            <a href="tel:{{profile.get('mb_no')}}" class="float-right">Call</a>
+                        </li>
+                        <li class="list-group-item">
+                            <div class="head-2">Email Id</div>
+                            <span>{{profile.get("email")}}</span>
+                            <a href="mailto:{{profile.get('email')}}" class="float-right">Email</a>
+                        </li>
+                        <li class="list-group-item">
+                            <div class="head-2">Address</div>
+                            <span>{{profile.get("address")}}</span>
+                        </li>
+                        <li class="list-group-item">
+                            <span class="head-2">Total Jobs: </span>
+                            <span id="job-count">{{total}}</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="card border-info mb-3">
+                    <div class="card-body with-js">
+                        <label for="accepted">Accepted <span id="accepted_count">{{category[0]}}</span></label>
+                        <div class="progress">
+                            <div class="progress-bar" id="accepted" role="progressbar" aria-valuenow="{{(category[0]/total)*100}}" aria-valuemin="0" aria-valuemax="100"></div>
+                        </div>
+
+                        <label for="completed">Completed <span id="completed_count">{{category[1]}}</span></label>
+                        <div class="progress">
+                            <div class="progress-bar bg-success" id="completed" role="progressbar" aria-valuenow="{{(category[1]/total)*100}}" aria-valuemin="0" aria-valuemax="100"></div>
+                        </div>
+
+                        <label for="reassigned">Reassigned <span id="reassigned_count">{{category[2]}}</span></label>
+                        <div class="progress">
+                            <div class="progress-bar bg-warning" id="reassigned" role="progressbar" aria-valuenow="{{(category[2]/total)*100}}" aria-valuemin="0" aria-valuemax="100"></div>
+                        </div>
+                        <noscript>
+                            <style>
+                                .with-js .progress, .with-js label{
+                                    display:none;
+                                }
+                                progress{width:100%;}
+                            </style>
+                            <label for="accepted_no" style="display: block!important;">Accepted <span id="accepted_count">{{category[0]}}</span></label>
+                            <progress id="accepted_no" value="{{(category[0]/total)*100}}" max="100"> {{(category[0]/total)*100}}% </progress>
+
+                            <label for="completed_no" style="display: block!important;">Completed <span id="completed_count">{{category[1]}}</span></label>
+                            <progress id="completed_no" value="{{(category[1]/total)*100}}" max="100"> {{(category[1]/total)*100}}% </progress>
+
+                            <label for="reassigned_no" style="display: block!important;">Reassigned <span id="reassigned_count">{{category[2]}}</span></label>
+                            <progress id="reassigned_no" value="{{(category[2]/total)*100}}" max="100"> {{(category[2]/total)*100}}% </progress>
+                        </noscript>
+                    </div>
+                </div>
+
+            </div>
+            <!-- jobs users has and their details -->
+            <div class="col-lg-8">
+                <h6>Jobs List - {{profile.get("business/contact")}}</h6>
+                <div class="card mb-3 job-card">
+                    <!-- <ul class="list-group list-group-flush">
+                        Jobs Will be present inside this block
+                        <li class="list-group-item">
+                            
+                        </li>
+                    </ul> -->
+                    <div class="accordion" id="accordionExample">
+                        {% for i in range(7) %}
+                        {% for job in profile.get("jobs") %}
+                        <div class="card">
+                            <div class="btn bg-light btn-link text-left collapsed py-2" id="job{{job[0]}}{{i}}" type="button" data-toggle="collapse" data-target="#{{job[-1]}}{{job[0]}}{{i}}" aria-expanded="true" aria-controls="{{job[-1]}}{{job[0]}}{{i}}">
+                                <span>ID: {{job[0]}}</span> <span class="ml-4">Title: {{job[1]}}</span>
+                            </div>
+                            <div id="{{job[-1]}}{{job[0]}}{{i}}" class="collapse" aria-labelledby="job{{job[0]}}{{i}}" data-parent="#accordionExample">
+                                <div class="card-body">
+                                    <div class="row mt-1">
+                                        <span style="font-weight: bold;">Client Name: </span><span id="client-name">&nbsp;{{job[2]}}</span>
+                                    </div>
+                                    <div class="row mt-1">
+                                        <span style="font-weight: bold;">Contact Number: </span><a href='tel:{{job[3]}}' id="contact-number">&nbsp;{{job[3]}}</a>
+                                    </div>
+                                    <div class="row mt-1">
+                                        <span style="font-weight: bold;">Work Date:</span><span id="work_date">&nbsp;{{job[4]}}</span>
+                                    </div>
+                                    <div class="row mt-1">
+                                        <span style="font-weight: bold;">Job Details:</span>
+                                        <p id="job-details">{{job[5]}}</p>
+                                    </div>
+                                    {% if job[6].strip() != "" %}
+                                        <div class="row mt-1">
+                                            <span style="font-weight: bold;">Client Note:</span>
+                                            <p id="note">{{job[6]}}</p>
+                                        </div>
+                                    {% endif %}
+                                    <div class="row mt-1">
+                                        <span style="font-weight: bold;">Address:</span>
+                                        <p id="Address">{{job[7]}}</p>
+                                    </div>
+                                    <div class="row mt-1">
+                                        <span style="font-weight: bold;">Posted on: </span><span id="contact-number">&nbsp;{{job[8]}}</span>
+                                    </div>
+                                    <div class="row mt-1">
+                                        {% if job[9] == "Accepted" %}
+                                            {% set status = "primary" %}
+                                        {% else %}
+                                            {% if job[9] == "Completed" %}
+                                                {% set status = "success" %}
+                                            {% else %}
+                                                {% set status = "warning" %}
+                                            {% endif %}
+                                        {% endif %}
+
+                                        <span style="font-weight: bold;">Status: </span><span class="text-{{status}}" id="status">&nbsp;{{job[9]}}</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                        {% endfor %}  
+                    </div>
+                </div>
+                {% if 100 > 99 %}
+                    <button class="btn btn-primary">Next</button>
+                {% endif %}
+            </div>
+
+            
+        </div>
+
+    </div>
+    
+    <script>
+        window.onload = function(){
+            var total = parseInt(document.getElementById('job-count').innerText);
+            var accept = parseInt(document.getElementById('accepted_count').innerText)
+            var completed = parseInt(document.getElementById('completed_count').innerText);
+            var reassigned = parseInt(document.getElementById('reassigned_count').innerText);
+            var accept_bar = document.getElementById('accepted');
+            var complete_bar = document.getElementById('completed');
+            var reassign_bar = document.getElementById('reassigned');
+            var accept_percent= String(((accept/total)*100));
+            var completed_percent= String(((completed/total)*100));
+            var reassigned_percent= String(((reassigned/total)*100));
+            $(accept_bar).animate({"width":accept_percent+"%"},"fast");
+            $(complete_bar).animate({"width":completed_percent+"%"},"fast");
+            $(reassign_bar).animate({"width":reassigned_percent+"%"},"fast");
+        }
+    </script>
+{% endblock %}

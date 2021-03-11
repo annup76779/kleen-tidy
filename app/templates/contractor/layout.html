@@ -6,33 +6,33 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <title>{{title}}</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css" integrity="sha384-B0vP5xmATw1+K9KRQjQERJvTumQW0nPEzvF6L/Z6nronJ3oUOFUFpCjEUQouq2+l" crossorigin="anonymous">
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/kat.css') }}?31536068">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/kat.css') }}?31536071">
 </head>
 <body>
     <nav class="navbar sticky-top navbar-expand-lg navbar-light">
-        <a class="navbar-brand" href="#"><div class="logo"><span style="color:lightgreen;"">Kleen</span><spa>&</span><span style="color:orange">Tidy</span></div></a>
-            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarTogglerDemo02" aria-controls="navbarTogglerDemo02" aria-expanded="false" aria-label="Toggle navigation">
-              <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarTogglerDemo02">
-              <ul class="navbar-nav mt-2 mt-lg-0 ml-auto menu-item">
+        <a class="navbar-brand" href="#"><div class="logo"><span style="color:lightgreen;">Kleen</span><spa>&</span><span style="color:orange">Tidy</span></div></a>
+        <a href="{{url_for('sub_cont.profile',userid = userid)}}" id="profile-sm" class="float-right ml-auto mr-2">{{userid}}</a>
+        <button class="navbar-toggler float-right" type="button" data-toggle="collapse" data-target="#navbarTogglerDemo02" aria-controls="navbarTogglerDemo02" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse float-left" id="navbarTogglerDemo02">
+            <ul class="navbar-nav ml-auto menu-item">
                 <li class="nav-item">
-                  <a class="nav-link active" href="/contractor/home">Home</a>
+                <a class="nav-link active" href="/contractor/home">Home</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link active" href="/contractor/jobs">All Jobs</a>
+                    <a class="nav-link active" href="/contractor/jobs">View Jobs</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link active" href="/contractor/schedule">Schedule</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link active" href="/contractor/profile">My Details</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link active" href="/logout/contractor">Logout</a>
+                    <a class="nav-link active" href="{{ url_for('logout') }}">Logout</a>
                 </li>
             </ul>
         </div>
+        <a href="{{url_for('sub_cont.profile',userid = userid)}}" id="profile-lg">{{userid}}</a>
+        
     </nav>
     <div class="container-fluid body">
         <div class="head mt-4">

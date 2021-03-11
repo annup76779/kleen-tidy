@@ -3,9 +3,23 @@
     
     <div class="container mt-5">
         <div class="row">
-            <div class="col-lg-7 form-body">
+            <div class="col-lg-2"></div>
+            <div class="col-lg-8 form-body">
+                <!--flash box-->
+                <div class="col-lg-12">
+                    <div class="row alert-box">
+                        <noscript>
+                            {% with messages = get_flashed_messages(with_categories = True) %}
+                                {% if messages %}
+                                    <div class="col-lg-12 alert alert-info fade show" role="alert"><span class ="alt-item">Enable JavaScript to get the flashed messages</span></div>
+                                {% endif %}
+                            {% endwith %}
+                        </noscript>
+                    </div>
+                </div>
+                <!--flash box ends-->
                 <div class="head-1" style="text-align: center; width: 100%;">Add Jobs</div>
-                <form action="/admin/post/jobs" method="post" id="add-jobs">
+                <form action="{{url_for('admin.post_jobs')}}" method="post">
                     <label for="title">Job Title</label> <!--Taking Job title-->
                     <input type="text" name="title" required id="title" class="form-control" oninvalid="this.setCustomValidity('A jobs must have its title')" oninput="setCustomValidity('')">
                                     
@@ -13,24 +27,10 @@
                     <input type="text" name="client" required id="client" class="form-control" oninvalid="this.setCustomValidity('Enter Client Name')" oninput="setCustomValidity('')">
                     
                     <label for="work-date">Work Date</label><!--Taking work date-->
-                    <input type="date" class="form-control" required name="work_date" id="work-date" oninvalid="this.setCustomValidity('Enter the work date of the Job.')" oninput="setCustomValidity('')">
+                    <input type="date" class="form-control" required name="work_date" id="work-date">
 
                     <label for="contact">Client Contact Number</label><!--Taking contact number of the client-->
-                    <div class="col-lg-12">
-                        <div class ="row">
-                            <div class="contact-number-feild">
-                            <div id="code"><!--Taking the country code of the client-->
-                                <select name="country-code" class= "form-control" oninvalid="this.setCustomValidity('Choose country')" oninput="setCustomValidity('')" id="contact">
-                                    <option value="+91" selected>India</option>
-                                    <option value="+61">Australia</option>
-                                </select>
-                            </div>
-                            <div id="number"><!--Taking client number-->
-                                <input type="number" oninput="validate_contact(document.getElementById('contact').value, this)" required name="number" class="form-control">
-                            </div>
-                            </div>
-                        </div>
-                    </div>
+                    <input type="number" oninput="validate_contact('+61', this)" required name="number" class="form-control"> 
 
                     <label for="details">Job Details</label><!--Taking details of a job-->
                     <textarea name="details" required id="details" class="form-control" oninvalid="this.setCustomValidity('Please enter the details of this job')" oninput="setCustomValidity('')"></textarea>
@@ -41,27 +41,30 @@
                     <label for="note">Client Note <span style="font-size: 10px;">(optional)</span> </label><!--Taking any note by the project-->
                     <textarea name="note" id="note" class="form-control"></textarea>
 
-                    <button class="btn btn-outline-success" style="width:100%; margin: 5px;margin-left:0px;">Add Jobs</button>
+                    <button type="submit" class="btn btn-outline-success" style="width:100%; margin: 5px;margin-left:0px;">Add Jobs</button>
 
                 </form>
-            </div>
-            
-            <!--Creating the lis to all the added jobs-->
-            <div class="col-lg-4 mt-4">
-                <div class="col-lg-12 head-1" style="text-align: center;width: 100%;background-color:white;">Added Sub-Contractors</div>
-                <div class="row added-item">
-                    <div class="col-lg-12">
-                        <div class="items">
-                            <div class="row mt-3">
-                                <div class="col-lg-12 text-center" id="nojob">No Jobs Added</div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
             </div>
 
         </div>
         
     </div>
-
+    <script>
+        window.onload = function(){
+            var alert_box = document.querySelector(".alert-box");
+            var i = 0;
+            {% with messages = get_flashed_messages(with_categories = True) %}
+                {% if messages %}
+                    {% for category,message in messages %}
+                        var text = {{message|tojson}};
+                        var type = {{category|tojson}};
+                        var alert_html = '<div class=" col-lg-12 alert alert-'+ type +' fade show" role="alert"><span id="alt-item'+i+'"></span></div>'
+                        alert_box.insertAdjacentHTML("beforeend",alert_html);
+                        document.getElementById('alt-item'+i).innerHTML = text;
+                        i++;
+                    {% endfor %}
+                {% endif %}
+            {% endwith %}
+        }
+    </script>
 {% endblock %}

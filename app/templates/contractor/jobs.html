@@ -1,22 +1,20 @@
-{% extends '/admin/layout.html' %}
+{% extends '/contractor/layout.html' %}
 {% block body %}
 <div class="container">
-    <!--feild to show the flashed messages-->
-    
     <!-- row1 -->
     <div class="row" style="margin-top:4%;">
         <div class="col-lg-1 space-div"></div>
         
-        <a href="{{ url_for('admin.admin_view_jobs') }}1" class="opbox col-lg-2">Jobs</a>
-        <a href="{{url_for('admin.admin_view_contractor')}}" class="opbox col-lg-3">Contractor Details</a>
-        <a href="{{ url_for('admin.add_jobs') }}" class="opbox col-lg-2">Add Jobs</a>
+        <a href="/contractor/view/jobs/1" class="opbox col-lg-3">New Jobs</a>
+        <div class="col-lg-2"></div>
+        <a href="/contractor/view/jobs/2" class="opbox col-lg-3">Active Jobs</a>
     </div>
     <!-- row2 -->
     <div class="row">
         <div class="col-lg-1 space-div"></div>
+        <a href="/contractor/view/jobs/3"  class="opbox col-lg-3">Completed Jobs</a>
         <div class="col-lg-2"></div>
-        <a href="{{ url_for('admin.add_contractor') }}"  class="opbox col-lg-2">Add Contractor</a>
-        <a href="url_for('logout')"  class="opbox col-lg-2">Logout</a>
+        <a href="/contractor/view/jobs/4"  class="opbox col-lg-3">Reassigned Jobs</a>
     </div>
 </div>
 <style>

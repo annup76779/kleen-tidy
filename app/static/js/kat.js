@@ -52,10 +52,5 @@ $(document).ready(function(){
     $(".back-to-top").click(function(){
         $("html, body").animate({ scrollTop: 0 }, "fast");
     });
-
-    // submitting jobs forms
-    $("#add-jobs").submit(function(){
-        return false;
-    });
     
 });

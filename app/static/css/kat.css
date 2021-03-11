@@ -113,10 +113,27 @@ body{
     z-index:10;
     cursor: pointer;
 }
+#profile-lg{
+    display:none;
+}
+.oops{
+    font-size: 70px;
+    width: 100%;
+    text-align: center;
+    color:orange;
+}
+.msg-oops{
+    font-size: 14px;
+    color: #393e46;
+}
 
 @media only screen and (min-width: 600px){
     .form-body{
         padding:5%;
+    }
+    .oops{
+        font-size: 80px;
+        padding-top:10%;
     }
 }
 
@@ -126,5 +143,11 @@ body{
     } 
     .added-item{
         margin-left: 2%;
+    }
+    #profile-lg{
+        display:inline;
+    }
+    #profile-sm{
+        display:none;
     }
 }

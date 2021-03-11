@@ -1,0 +1,176 @@
+{% extends '/contractor/layout.html' %}
+{% block body %}
+<style>
+    .filter-box{
+        position: relative;
+    }
+    .filter-item{
+        position: absolute;
+        right:15px;
+        bottom:-40px;
+        width:200px;
+        z-index: 1;
+    }
+</style>
+    <div class="container mt-5">
+        <div class="filter-box">
+            <div class="filter-item">
+                <label for="filter">Filter</label>
+                <select name="filter" value="{{filter}}" onchange="filter_jobs(this.value)" id="filter" class="form-control">
+                    <option value="1">New Jobs</option>
+                    <option value="2">Active Jobs</option>
+                    <option value="3">Completed Jobs</option>
+                    <option value="4">Reassigned Jobs</option>
+                </select>
+            </div>
+        </div>
+        <div class="head-2 ml-3 mb-4">{{title}}</div>
+        <!--feild to show the flashed messages-->
+        <div class="col-md-12">
+            <div class="row alert-box"></div>
+        </div>
+        <!--flashed messages area ends here-->
+
+        {% if jobs %}
+            {% for items in jobs %}
+                {% set job = items[0] %}
+                {% set detail = items[1] %}
+                <div class="col-lg-12 mb-4" id="job{{job.jobid}}">
+                    <!--card to show the jobs provided by the server-->
+                    <div class="card">
+                        <div class="card-body">
+
+                            <!--Job heading start-->
+                            <div class="my-1">
+                                <span class="head-1 text-primary">{{ detail.job_title }}</span>
+                                <span class="float-right">{{ job.jobid }}</span>
+                                <div style="font-size:11px;">
+                                    <span style="font-weight: bold;">Posted on: </span><span>&nbsp;{{ detail.post_date }}</span>
+                                </div>
+                            </div>
+                            <hr/>
+                            <!--Job heading ends here-->
+
+                            <!--Job Details starts here-->
+                            <div class="mt-1">
+                                <span style="font-weight: bold;">Client Name: </span><span>&nbsp;{{ detail.client_name }}</span>
+                            </div>
+                            <div class="mt-1">
+                                <span style="font-weight: bold;">Contact Number: </span><a href='tel:{{ detail.contact_no }}'>&nbsp;{{ detail.contact_no }}</a>
+                            </div>
+                            <div class="mt-1">
+                                <span style="font-weight: bold;">Work Date:</span><span>&nbsp;{{ detail.workdate }}</span>
+                            </div>
+                            <div class="mt-1">
+                                <span style="font-weight: bold;">Job Details:</span>
+                                <p>{{ detail.job_detail }}</p>
+                            </div>
+                            <div class="mt-1">
+                                <span style="font-weight: bold;">Client Note:</span>
+                                <p>{{ detail.client_note }}</p>
+                            </div>
+                            <div class="mt-1">
+                                <span style="font-weight: bold;">Address:</span>
+                                <p>{{ detail.address }}</p>
+                            </div>
+                            <!--Job Details Ends here-->
+
+                            <!--Job Accept and Deny button portion--> 
+                            {% if filter == "1" %}
+                                <button class="btn btn-primary" id = "accept-{{job.jobid }}" onclick="accept(this, {{job.jobid }})">Accept <i class="fa fa-plus"></i></button>
+                                <button class="btn btn-danger" onclick = "deny(this, {{ job.jobid }})">Deny <i class="fa fa-times"></i></button>
+                            {% else %}
+                                {% if filter == "2" %}
+                                    {% if not inprogress %}  
+                                        <button class="btn btn-primary">Start</button>
+                                    {% endif %}
+                                    <button class="btn btn-success" onclick="finish(this, {{job.jobid }})">Finished</button>
+                                {% else %}
+                                    {% if filter == "4" %}
+                                        <button class="btn btn-primary">Accept <i class="fa fa-plus"></i></button>
+                                        <button class="btn btn-danger">Deny <i class="fa fa-times"></i></button>
+                                    {% endif %}
+                                {% endif %}
+                                    
+                            {% endif %}
+                        </div>
+                    </div>
+                    <!--card ends-->
+
+                </div>
+            {% endfor %}
+        {% else %}
+            <div class="col-lg-12">
+                <div class="row">
+                    <div class="col-lg-12 oops">
+                        Oops!
+                        <div class="col-lg-12 msg-oops">
+                            No jobs found.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% endif %}
+    </div>
+    <script>
+        function accept(el, id){
+            $(el).html('<i class="fa fa-spinner fa-spin"></i>')
+            $.ajax({
+                url: "/contractor/accept/job/" + id,
+                contentType: "application/json; charset=utf-8",
+                dataType: "json"
+            }).done(function(data){
+                if (!data.status){
+                    $("#"+data.id).append(data.message)
+                }
+                else{
+                    $(el).html(data.message);
+                    $(el).addClass('disabled');
+                    $(el).attr("onclick","return false;")
+                }
+            });
+        }
+
+        function finish(el, id){
+            $(el).html('<i class="fa fa-spinner fa-spin"></i>')
+            $.ajax({
+                url: "/contractor/finished/job/" + id,
+                contentType: "application/json; charset=utf-8",
+                dataType: "json"
+            }).done(function(data){
+                if (!data.status){
+                    $("#"+data.id).append(data.message)
+                }
+                else{
+                    $("#"+data.id).html(data.message);
+                }
+            });
+        }
+        // view jobs funtions- which will be further used to send request for data for different jobs filter
+        function filter_jobs(value){
+            // value is the value for filter
+            window.location = '/contractor/view/jobs/'+value;
+        }
+        
+        window.onload = function(event){
+            var value = {{filter|tojson}};
+            $("#filter").val(value);
+
+            // flash message
+            var alert_box = document.querySelector(".alert-box");
+            var i = 0;
+            {% with messages = get_flashed_messages(with_categories = True) %}
+                {% if messages %}
+                    {% for category,message in messages %}
+                        var text = {{message|tojson}};
+                        var type = {{category|tojson}};
+                        var alert_html = '<div class=" col-lg-12 alert alert-'+ type +' alert-dismissible fade show" role="alert"><span id="alt-item'+i+'"></span><button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button></div>'
+                        alert_box.insertAdjacentHTML("beforeend",alert_html);
+                        document.getElementById('alt-item'+i).innerText = text;
+                        i++;
+                    {% endfor %}
+                {% endif %}
+            {% endwith %}
+        }
+    </script> 
+{% endblock  %}

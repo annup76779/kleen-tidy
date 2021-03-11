@@ -1,6 +1,20 @@
 {% extends '/admin/layout.html' %}
 {% block body %}
 
+<!--flash box-->
+<div class="col-lg-12">
+    <div class="row alert-box">
+        <noscript>
+            {% with messages = get_flashed_messages(with_categories = True) %}
+                {% if messages %}
+                    <div class="col-lg-12 alert alert-info fade show" role="alert"><span class ="alt-item">Enable JavaScript to get the flashed messages</span></div>
+                {% endif %}
+            {% endwith %}
+        </noscript>
+    </div>
+</div>
+<!--flash box ends-->
+
 <div class="filter-box">
     <div class="filter-item">
         <label for="filter">Filter</label>
@@ -29,56 +43,21 @@
             </tr>
         </thead>
         <tbody>
-            <tr>
-                <th scope="row">annup76779</th>
-                <td>Graphico(Anurag Pandey)</td>
-                <td>12345678911</td>
-                <td>+91 8726771497</td>
-                <td>annup76779@gmail.com</td>
-                <td><a href="/admin/open/contractor/annup76779">View</a></td>
-                <td><a href="#edit" onclick="openEditModal(1,this)">Edit</a></td>
-                <td><a href="#del">Delete</a></td>
-            </tr>
-            <tr>
-                <th scope="row">annup76779</th>
-                <td>Graphico(Anurag Pandey)</td>
-                <td>12345678911</td>
-                <td>+91 8726771497</td>
-                <td>annup76779@gmail.com</td>
-                <td><a href="/admin/open/contractor/annup76779">View</a></td>
-                <td><a href="#edit" onclick="openEditModal(1,this)">Edit</a></td>
-                <td><a href="#del">Delete</a></td>
-            </tr>
-            <tr>
-                <th scope="row">annup76779</th>
-                <td>Graphico(Anurag Pandey)</td>
-                <td>12345678911</td>
-                <td>+91 8726771497</td>
-                <td>annup76779@gmail.com</td>
-                <td><a href="/admin/open/contractor/annup76779">View</a></td>
-                <td><a href="#edit" onclick="openEditModal(1,this)">Edit</a></td>
-                <td><a href="#del">Delete</a></td>
-            </tr>
-            <tr>
-                <th scope="row">annup76779</th>
-                <td>Graphico(Anurag Pandey)</td>
-                <td>12345678911</td>
-                <td>+91 8726771497</td>
-                <td>annup76779@gmail.com</td>
-                <td><a href="/admin/open/contractor/annup76779">View</a></td>
-                <td><a href="#edit" onclick="openEditModal(1,this)">Edit</a></td>
-                <td><a href="#del">Delete</a></td>
-            </tr>
-            <tr>
-                <th scope="row">annup76779</th>
-                <td>Graphico(Anurag Pandey)</td>
-                <td>12345678911</td>
-                <td>+91 8726771497</td>
-                <td>annup76779@gmail.com</td>
-                <td><a href="/admin/open/contractor/annup76779">View</a></td>
-                <td><a href="#edit" onclick="openEditModal(1,this)">Edit</a></td>
-                <td><a href="#del">Delete</a></td>
-            </tr>
+            {% if contractors %}
+                    {% for user in contractors.items %}
+                        <tr>
+                            <th scope="row">{{user.userid}}</th>
+                            <td>{{ user.business_contact_name }}</td>
+                            <td>{{ user.abn }}</td>
+                            <td>{{ user.mob_number }}</td>
+                            <td>{{ user.email }}</td>
+                            <td><a href="/admin/open/contractor/{{user.userid}}">View</a></td>
+                            <td><a href="#edit" onclick="openEditModal({{user.row_count}},this)">Edit</a></td>
+                            <td><a href="#del">Delete</a></td>
+                        </tr>
+                    {% endfor %}
+            {% endif %}
+            
         </tbody>
     </table>
 </div>
@@ -246,9 +225,7 @@
         title_dict = {
             "1":"Oldest to Latest", "-1": "Latest to oldest"
         }
-        window.history.pushState({jobtype:value}, title_dict[value], '/admin/view/contractor/'+value);
-        document.title = {{title|tojson}}+"("+title_dict[value]+")";
-        $(".title-job").html("("+title_dict[value]+")");
+        window.location = '/admin/view/contractor/'+value;
     }
 
     window.onload = function(event){
@@ -258,16 +235,21 @@
         var value = {{value|tojson}};
         $(".title-job").html("("+title_dict[value]+")");
         $("#filter").val(value);
+        
+        var alert_box = document.querySelector(".alert-box");
+        var i = 0;
+        {% with messages = get_flashed_messages(with_categories = True) %}
+            {% if messages %}
+                {% for category,message in messages %}
+                    var text = {{message|tojson}};
+                    var type = {{category|tojson}};
+                    var alert_html = '<div class=" col-lg-12 alert alert-'+ type +' alert-dismissible fade show" role="alert"><span id="alt-item'+i+'"></span><button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button></div>'
+                    alert_box.insertAdjacentHTML("beforeend",alert_html);
+                    document.getElementById('alt-item'+i).innerHTML = text;
+                    i++;
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
     }
-
-    window.addEventListener("popstate",function(event){
-        title_dict = {
-            "1":"Oldest to Latest", "-1": "Latest to oldest"
-        }
-        val = event.state.jobtype;
-        // alert(val)
-        $(".title-job").html("("+title_dict[value]+")");
-        $("#filter").val(val);
-    });
 </script>
 {% endblock  %}

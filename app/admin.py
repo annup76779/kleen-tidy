@@ -87,8 +87,8 @@ def post_jobs():
                 else:  
                     flash("Please enter all the required feilds.","danger")
             return redirect(url_for("admin.add_jobs"))
-        except Exception as e:
-            flash(f"Error Occurred: {e}","danger")
+        except:
+            flash(f"Error Occurred","danger")
             return redirect(url_for("admin.add_jobs"))
     else:
         logout_user()
@@ -120,7 +120,7 @@ def post_contractor():
                 number_len = country_number_len.get(country_code, None) #getting country contact number length
                 if business_contact_name != "" and abn != "" and len(abn) == 11 and number_len is not None and number != "" and email != "" and address != "":
                     # checking email
-                    regex = r'[a-z0-9]+(\.+[a-z0-9]+)*@+[a-z]+(\.+[a-z]+)+' #regex
+                    regex = r'[a-z0-9A-Z]+(\.+[a-z0-9A-Z]+)*@+[a-z]+(\.+[a-z]+)+' #regex
                     email_check = re.match(regex, email)
                     if email_check:
                         if len(number) == number_len:

@@ -33,7 +33,7 @@ def authenticate_contractor():
          return redirect(url_for("sub_cont.contractor_home"))
       else:
          flash("User Id or Password didn't matched", "danger")
-         return redirect("/team_login")
+         return redirect("/")
    else:
       abort(405)
 

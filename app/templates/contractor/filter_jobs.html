@@ -79,7 +79,6 @@
                             <!--Job Accept and Deny button portion--> 
                             {% if filter == "1" %}
                                 <button class="btn btn-primary" id = "accept-{{job.jobid }}" onclick="accept(this, {{job.jobid }})">Accept <i class="fa fa-plus"></i></button>
-                                <button class="btn btn-danger" onclick = "deny(this, {{ job.jobid }})">Deny <i class="fa fa-times"></i></button>
                             {% else %}
                                 {% if filter == "2" %}
                                     {% if not job.start_date%}  

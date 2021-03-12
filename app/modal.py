@@ -74,10 +74,6 @@ class AdminModal(UserMixin, db.Model):
     index = db.Column(db.Integer, unique = True)
     id = db.Column(db.String, primary_key = True) # it should be present as it is used by the Flask-Login
 
-    def is_active(self):
-        print("Hello")
-        return self.index
-
     def setindex(self):
         self.index = AdminModal.query.count()
 

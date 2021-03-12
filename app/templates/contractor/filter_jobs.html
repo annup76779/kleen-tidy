@@ -21,6 +21,7 @@
                     <option value="2">Active Jobs</option>
                     <option value="3">Completed Jobs</option>
                     <option value="4">Reassigned Jobs</option>
+                    <option value="5">Schedule</option>
                 </select>
             </div>
         </div>
@@ -81,14 +82,26 @@
                                 <button class="btn btn-danger" onclick = "deny(this, {{ job.jobid }})">Deny <i class="fa fa-times"></i></button>
                             {% else %}
                                 {% if filter == "2" %}
-                                    {% if not inprogress %}  
-                                        <button class="btn btn-primary">Start</button>
+                                    {% if not job.start_date%}  
+                                        <button class="btn btn-primary" onclick="start(this, {{job.jobid }})">Start</button>
+                                    {% else %}
+                                        <button class="btn btn-success" onclick="finish(this, {{job.jobid }})">Finished</button>
                                     {% endif %}
-                                    <button class="btn btn-success" onclick="finish(this, {{job.jobid }})">Finished</button>
-                                {% else %}
-                                    {% if filter == "4" %}
-                                        <button class="btn btn-primary">Accept <i class="fa fa-plus"></i></button>
-                                        <button class="btn btn-danger">Deny <i class="fa fa-times"></i></button>
+                                    {% else %}
+                                    {% if filter == "3" %}
+                                        <div class="mt-1">
+                                            <span style="font-weight: bold;">Start Time:</span>
+                                            <p>{{ job.start_date }}</p>
+                                        </div>
+                                        <div class="mt-1">
+                                            <span style="font-weight: bold;">End Time:</span>
+                                            <p>{{ job.end_date }}</p>
+                                        </div>
+                                    {% else %}    
+                                        {% if filter == "4" %}
+                                            <button class="btn btn-primary" id = "accept-{{job.jobid }}" onclick="accept(this, {{job.jobid }})">Accept <i class="fa fa-plus"></i></button>
+                                            <button class="btn btn-danger" onclick = "deny(this, {{ job.jobid }})">Deny <i class="fa fa-times"></i></button>
+                                        {% endif %}
                                     {% endif %}
                                 {% endif %}
                                     
@@ -119,9 +132,10 @@
                 url: "/contractor/accept/job/" + id,
                 contentType: "application/json; charset=utf-8",
                 dataType: "json"
-            }).done(function(data){
+            })
+            .done(function(data){
                 if (!data.status){
-                    $("#"+data.id).append(data.message)
+                    $("#"+data.id+" .card .card-body").append(data.message)
                 }
                 else{
                     $(el).html(data.message);
@@ -139,10 +153,28 @@
                 dataType: "json"
             }).done(function(data){
                 if (!data.status){
-                    $("#"+data.id).append(data.message)
+                    $("#"+data.id+" .card .card-body").append(data.message)
                 }
                 else{
-                    $("#"+data.id).html(data.message);
+                    $("#"+data.id+" .card .card-body").html(data.message);
+                }
+            });
+        }
+        function start(el, id){
+            $(el).html('<i class="fa fa-spinner fa-spin"></i>')
+            $.ajax({
+                url: "/contractor/start/job/" + id,
+                contentType: "application/json; charset=utf-8",
+                dataType: "json"
+            }).done(function(data){
+                if (!data.status){
+                    $("#"+data.id+" .card .card-body").append(data.message)
+                }
+                else{
+                    $(el).html(data.message);
+                    $(el).removeClass("btn-primary");
+                    $(el).addClass('btn-success');
+                    $(el).attr("onclick","finish(this,"+data.id+")");
                 }
             });
         }

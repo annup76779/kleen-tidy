@@ -1,4 +1,5 @@
-from flask import Blueprint, render_template, redirect, abort, request, session, url_for, flash
+from operator import add
+from flask import Blueprint, render_template, redirect, abort, request, session, url_for, flash, jsonify
 from werkzeug.datastructures import ContentRange
 from app.modal import AdminModal, Userlogin, Userdetail, Jobs, isdate, Status, is_admin, is_contractor
 from flask_login import logout_user, current_user, login_user, login_required
@@ -98,8 +99,6 @@ def post_jobs():
 @login_required
 def add_contractor():
     if is_admin(current_user.id):
-        print(current_user, "hello BCx")
-        print(current_user.is_active())
         return render_template("/admin/add_contractor.html", title="Add Contractor")
     else:
         logout_user()
@@ -181,41 +180,40 @@ def admin_view_jobs(filter = "1"):
             title_dict = {
                 "1": "All Jobs", "2":"Jobs Posted Today","3": "Active Jobs", "4":"Completed Jobs", "5":"Reassigned Jobs", "6":"To-do Today"
             }
-            page = request.args.get("page", 1, type = int)
             if filter == "1":
-                jobs = Jobs.query.order_by(Jobs.id.desc()).paginate(per_page = 5,page = page)
-                if not jobs.items:
+                jobs = Jobs.query.order_by(Jobs.id.desc()).all()
+                if not jobs:
                     flash("No jobs posted!<a href='/admin/add/jobs'>Post Jobs</a>","info")
             elif filter == "2":
                 date_time = datetime.now()
                 date = date_time.strftime("%d-%m-%Y")
-                jobs = Jobs.query.filter_by(post_date = date).order_by(Jobs.id.desc()).paginate(per_page = 5,page = page)
-                if not jobs.items:
+                jobs = Jobs.query.filter_by(post_date = date).order_by(Jobs.id.desc()).all()
+                if not jobs:
                     flash("No new jobs!","info")
             elif filter == "3":
-                jobs = Status.query.filter_by(status = 1).order_by(Status.jobid.desc()).paginate(per_page = 5,page = page)
-                if not jobs.items:
+                jobs = Status.query.filter_by(status = 1).order_by(Status.jobid.desc()).all()
+                if not jobs:
                     flash("No jobs with status as Accepted!","info")
             elif filter == "4":
-                jobs = Status.query.filter_by(status = 2).order_by(Status.jobid.desc()).paginate(per_page = 5,page = page)
-                if not jobs.items:
+                jobs = Status.query.filter_by(status = 2).order_by(Status.jobid.desc()).all()
+                if not jobs:
                     flash("No jobs with status as Completed!","info")
             elif filter == "5":
-                jobs = Status.query.filter_by(status = 3).order_by(Status.jobid.desc()).paginate(per_page = 5,page = page)
-                if not jobs.items:
+                jobs = Status.query.filter_by(status = 3).order_by(Status.jobid.desc()).all()
+                if not jobs:
                     flash("No jobs with status as Reassigned!","info")
             elif filter == "6":
                 date_time = datetime.now()
                 date = date_time.strftime("%Y-%m-%d")
-                jobs = Jobs.query.filter_by(workdate = date).order_by(Jobs.post_date.desc(), Jobs.post_time.desc()).paginate(per_page = 5,page = page)
-                if not jobs.items:
+                jobs = Jobs.query.filter_by(workdate = date).order_by(Jobs.post_date.desc(), Jobs.post_time.desc()).all()
+                if not jobs:
                     flash("No jobs to-do today!","info")
             else:
                 flash("Invalid filter! So all jobs are been displayed to you.","warning")
                 return redirect(url_for("admin.admin_view_jobs"))
             return render_template("/admin/view_jobs.html", title=title_dict.get(filter), value = filter, jobs = jobs)
-        except:
-            flash("Sorry! Something went wrong.If this keeps on comming, kindly contact developer.","danger")
+        except Exception as e:
+            flash(f"Sorry! Something went wrong.If this keeps on comming, kindly contact developer.{e}","danger")
             return render_template("/admin/view_jobs.html", title=title_dict.get(filter), value = filter)
     else:
         logout_user()
@@ -228,15 +226,14 @@ def admin_view_jobs(filter = "1"):
 def admin_view_contractor(filter = "-1"):
     if is_admin(current_user.id):
         try:
-            page = request.args.get("page", 1, type = int)
             if filter == "1":
-                contractors = Userdetail.query.paginate(per_page = 5, page = page)
+                contractors = Userdetail.query.all()
             elif filter == "-1":
-                contractors = Userdetail.query.order_by(Userdetail.row_count.desc()).paginate(per_page = 5,page = page)
+                contractors = Userdetail.query.order_by(Userdetail.row_count.desc()).all()
             else:
                 flash("Invalid filter! So filter is default filter.","warning")
                 return redirect(url_for("admin.admin_view_contractor"))
-            if not contractors.items:
+            if not contractors:
                 flash("No contractor added yet.<a href = '/admin/add/contractor'>Add Contractors</a>","info")
             return render_template("/admin/view_contractor.html", title="Contactor's List", value = filter, contractors = contractors)
             
@@ -255,21 +252,167 @@ def open_contractor(userid = None):
         # try:
             page = request.args.get("page", 1, type = int) # will be used for ajax if time left
             contractor = Userlogin.query.filter_by(id = userid).first_or_404()
-            jobs = contractor.jobs
+            if contractor.is_active == 1:
+                acc_status = "Active"
+                next_type = 'Deactivate'
+            else:
+                acc_status = "Deactivated"
+                next_type = 'Activate'
+            jobs = db.session.query(Status, Jobs).outerjoin(Jobs, Status.jobid == Jobs.id).filter(Status.userid == contractor.id).all()
             details = contractor.details
             if jobs:
                 accepted = Status.query.with_entities(Status.jobid).filter_by(user = contractor, status = 1).count()
                 completed = Status.query.with_entities(Status.jobid).filter_by(user = contractor, status = 2).count()
                 reassigned = Status.query.with_entities(Status.jobid).filter_by(user = contractor, status = 3).count()
-                return render_template("/admin/profile.html", title=f"Profile | {contractor.id}", details = details, jobs = jobs, accepted = accepted, completed = completed, reassigned = reassigned)
-            return render_template("/admin/profile.html", title=f"Profile | {contractor.id}", details = details)
+                return render_template("/admin/profile.html", title=f"Profile | {contractor.id}", details = details, jobs = jobs, accepted = accepted, completed = completed, reassigned = reassigned, acc_status = acc_status, next_type = next_type)
+            accepted = completed = reassigned = -1
+            return render_template("/admin/profile.html", title=f"Profile | {contractor.id}", details = details,  accepted = accepted, completed = completed, reassigned = reassigned, acc_status = acc_status, next_type = next_type)
         # except Exception as e:
-        #     flash(f"Error: {e}","danger")
-        #     flash("Sorry! Something went wrong.If this keeps on comming, kindly contact developer","danger")
+        #     flash(f"Sorry! Something went wrong.If this keeps on comming, kindly contact developer{e}","danger")
         #     return redirect(url_for("admin.admin_view_contractor"))
     else:
         logout_user()
         return redirect(url_for("admin.admin_login"))
-    # if users.get("userid", None) == userid:
-    #     return render_template("/admin/profile.html", title = "Contractor Profile", profile = users, category = [1,11,12], total = sum([1,11,12]))
+
+
+@admin.route("/open/job/<id>")
+@login_required
+def admin_open_jobs(id):
+    """This function return the job details to the admin along with user who accepted the job if anyone has accepted"""
+    try:
+        if is_admin(current_user.id):
+            jobs = db.session.query(Status,Jobs).outerjoin(Jobs, Status.jobid == Jobs.id).order_by(Status.jobid.desc()).filter(Status.jobid == int(id)).first()
+            if jobs: 
+                job = jobs[0]
+                detail = jobs[1]
+                user = job.user
+                print(job.status)
+                print(type(job.end_date),job.end_date)
+                if user:
+                    user = user.details
+                else:
+                    user = None
+                status = job.status
+                dict = {
+                    "0":"Pending",
+                    "1":"Accepted",
+                    "2":"Completed",
+                    "3":"Reassigned",
+                }
+                current_status = dict.get(str(status))
+                html = render_template("/admin/view_jobs_modal_template.html", job = jobs, detail = detail, user = user, status = status, current_status = current_status, end_date = job.end_date, start_date = job.start_date)
+                return jsonify({"status":True, "html":html})
+            else:
+                return jsonify({"status":False, "message":"Invalid userid!"})
+        else:
+            logout_user()
+            flash("Login is required!")
+            return redirect(url_for("admin.admin_login"))
+    except Exception as e:
+        message = f"Sorry! Something went wrong.If this keeps on comming, kindly contact developer: {e}"
+        return jsonify({"status":False,"message":message})
+
+@admin.route("/delete/job/<id>")
+@login_required
+def admin_delete_jobs(id):
+    """ this will delete the jobs based on id transfered by the admin. """
+    if is_admin(current_user.id):
+        try:
+            job = Status.query.filter_by(jobid = int(id)).first()
+            if job:
+                db.session.delete(job)
+                db.session.commit()
+                flash("Job deleted successfully.","success")
+            else:
+                flash("No such jobs present, so cannot be deleted", "danger")
+            return redirect(url_for("admin.admin_view_jobs"))
+        except:
+            flash("Sorry! Something went wrong.If this keeps on comming, kindly contact developer","danger")
+            return redirect(url_for("admin.admin_view_jobs"))
+    else:
+        logout_user()
+        flash("Login is required!")
+        return redirect(url_for("admin.admin_login"))
+
+
+@admin.route("/shuffle/contractor/<userid>/<acc_type>")
+@login_required
+def shuffle_acc_type(userid, acc_type):
+    """ this will active or deactive user the jobs based on useid transfered by the admin. """
+    if is_admin(current_user.id):
+        try:
+            user = Userlogin.query.filter_by(id = userid).first()
+            if user:
+                dict = {
+                    "Activate":1,
+                    "Deactivate": 2
+                }
+                user.is_active = dict.get(acc_type, 1)
+                db.session.add(user)
+                db.session.commit()
+                flash(f"Contractor {acc_type}d successfully.","success")
+            else:
+                flash("No such contractor present", "danger")
+            return redirect(f"/admin/open/contractor/{userid}")
+        except:
+            flash("Sorry! Something went wrong.If this keeps on comming, kindly contact developer","danger")
+            return redirect(f"/admin/open/contractor/{userid}")
+    else:
+        logout_user()
+        flash("Login is required!")
+        return redirect(url_for("admin.admin_login"))
+
+
+@admin.route("/edit_contractor/<userid>")
+@login_required
+def edit_contractor(userid):
+    if is_admin(current_user.id):
+        user = Userdetail.query.filter_by(userid = userid).first()
+        if user:
+            return render_template("/admin/edit_contractor.html", title="Add Contractor", user = user)
+        else:
+            flash("Unable to edit.","danger")
+            return redirect(url_for("admin.admin_view_contractor"))
+    else:
+        logout_user()
+        return redirect(url_for("admin.admin_login"))
+
+@admin.route("/change_contractor/<userid>", methods=['POST'])
+@login_required
+def change_contractor(userid):
+    try:
+        if is_admin(current_user.id):
+            user = Userdetail.query.filter_by(userid = userid).first()
+            if user:
+                if request.method == "POST":
+                    business_contact_name =  request.form.get("business_contact_name","")
+                    abn = request.form.get("abn","")[:11]
+                    country_code = "+61" #hardcoded country code
+                    email = request.form.get("email","")
+                    address = request.form.get("address","")
+                    if business_contact_name != "" and abn != "" and len(abn) == 11 and email != "" and address != "":
+                        # checking email
+                        regex = r'[a-z0-9]+(\.+[a-z0-9]+)*@+[a-z]+(\.+[a-z]+)+' #regex
+                        email_check = re.match(regex, email)
+                        if email_check:
+                                user.email = email
+                                user.abn = abn
+                                user.business_contact_name = business_contact_name
+                                user.address = address
+                                db.session.add(user)
+                                db.session.commit()
+                                flash("Edited successfully","success")
+                        else:
+                            flash("Email is in use.","warning")
+                return redirect(url_for("admin.admin_view_contractor"))
+            else:
+                flash("Unable to edit.","danger")
+                return redirect(url_for("admin.admin_view_contractor"))
+        else:
+            logout_user()
+            return redirect(url_for("admin.admin_login"))
+    except:
+        flash("Sorry! Something went wrong.If this keeps on comming, kindly contact developer","danger")
+        return redirect(url_for("admin.admin_view_contractor"))
+
 #----- admin zone ended ----------

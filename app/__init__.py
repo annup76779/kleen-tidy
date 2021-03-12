@@ -17,7 +17,7 @@ with open(get_path("config.json"), "r") as f:
    param = json.load(f) #json values are loaded and saved in python dictionary param
 
 app.config["SQLALCHEMY_DATABASE_URI"] = param.get("db-uri")
-app.config["SQLALCHEMY_ECHO"] = True
+# app.config["SQLALCHEMY_ECHO"] = True
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 
 app.secret_key = "\xc6^\xe13\xb31\xc4\x9c\x00A\xa70\xe6J\xdd\xc6o<\xf9\x00~\x00\xaa\xc9\x87\xe6\x00W\xa3Q\xda"

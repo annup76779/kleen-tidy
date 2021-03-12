@@ -1,4 +1,4 @@
-{% extends '/admin/layout.html' %}
+{% extends '/contractor/layout.html' %}
 
 {% block body %}
 <style>
@@ -27,11 +27,16 @@
     .btn{
         border-radius:0px;
     }
+    #pass_form{
+        display:none;
+    }
 </style>
     <div class="container-lg mt-5">
+        <!--feild to show the flashed messages-->
         <div class="col-md-12">
             <div class="row alert-box"></div>
         </div>
+        <!--flashed messages area ends here-->
         <div class="row">
             <!--profile divsion-->
             {% if details %}
@@ -60,9 +65,19 @@
                                 <a href="mailto:{{ details.email }}" class="float-right">Email</a>
                             </li>
                             <li class="list-group-item">
-                                <div class="head-2">Account Status</div>
-                                <span>{{ acc_status }}</span>
-                                <a href="/admin/shuffle/contractor/{{details.userid}}/{{next_type }}" class="float-right" onclick="return confirm('Do you want to do this?')">{{next_type}}</a>
+                                <span class="head-2">Password</span>
+                                <a href="#" onclick="show_form(this)" class="float-right" id="change">Change</a>
+                                <div class="row" id="pass_form">
+                                    <div class="col-lg-12">
+                                        <form action="/contractor/change_pass/{{userid}}" method="post">
+                                            <input type="password" name="old_pass" required class="form-control" placeholder="Enter Current Password">
+                                            <input type="password" name="pass" required id = "main" class="form-control" placeholder="Enter New Password">
+                                            <input type="password" name="conf_pass" required class="form-control" placeholder="Confirm Password" oninput="confirm_pass(this);">
+                                            <button type="submit" class="btn btn-primary mt-2" role="button">Change</button>
+                                            <button type="reset" class="btn btn-light mt-2" onclick="$('#pass_form').hide();$('#change').show();">Cancle</button>
+                                        </form>
+                                    </div>
+                                </div>
                             </li>
                             <li class="list-group-item">
                                 <div class="head-2">Address</div>
@@ -218,6 +233,22 @@
     </div>
     
     <script>
+        function show_form(el){
+            var form = document.getElementById('pass_form');
+            el.style.display = "none";
+            form.style.display = "block";
+        }
+
+        function confirm_pass(el) {
+            var main = document.getElementById('main');
+            if (main.value == el.value){
+                el.setCustomValidity('');
+            }
+            else{
+                el.setCustomValidity('Confirm password and new password should be same.')
+            }
+        }
+
         window.onload = function(){
             var total = parseInt(document.getElementById('job-count').innerText);
             var accept = parseInt(document.getElementById('accepted_count').innerText)
@@ -229,11 +260,9 @@
             var accept_percent= String(((accept/total)*100));
             var completed_percent= String(((completed/total)*100));
             var reassigned_percent= String(((reassigned/total)*100));
-            console.log(accept_percent)
             $("#accepted").animate({"width":accept_percent+"%"},"fast");
             $("#completed").animate({"width":completed_percent+"%"},"fast");
             $("#reassigned").animate({"width":reassigned_percent+"%"},"fast");
-
 
             // flash message
             var alert_box = document.querySelector(".alert-box");

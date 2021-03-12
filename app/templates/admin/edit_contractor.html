@@ -1,0 +1,66 @@
+{% extends '/admin/layout.html' %}
+{% block body %}
+    {% if user %}
+        
+    <div class="container mt-5">
+        <div class="row">
+            <div class="col-lg-2"></div>
+            <div class="col-lg-8 form-body">
+                <!--flash box-->
+                <div class="col-lg-12">
+                    <div class="row alert-box">
+                        <noscript>
+                            {% with messages = get_flashed_messages(with_categories = True) %}
+                                {% if messages %}
+                                    <div class="col-lg-12 alert alert-info fade show" role="alert"><span class ="alt-item">Enable JavaScript to get the flashed messages</span></div>
+                                {% endif %}
+                            {% endwith %}
+                        </noscript>
+                    </div>
+                </div>
+                <!--flash box ends-->
+                <div class="head-1" style="text-align: center; width: 100%;">Add Sub-Contractor</div>
+                <form action="/admin/change_contractor/{{user.userid}}" method="post" id="add-contractor">
+                    <label for="business">Business/Contact Name</label> <!--Taking Job title-->
+                    <input type="text" name="business_contact_name" value = "{{user.business_contact_name}}" required id="business" class="form-control">
+
+                    <label for="abn">ABN Number</label><!--Taking Client name of a job-->
+                    <input type="number" name="abn" required id="abn" value = "{{user.abn}}" class="form-control" oninvalid="this.setCustomValidity('ABN Number Should be of 11 digits')" oninput="validateABN(this)">
+                    <label for="email">Email</label><!--Taking Client name of a job-->
+                    <input type="email" name="email" value = "{{ user.email }}" required id="email" class="form-control" oninvalid="this.setCustomValidity('Enter contractor\'s email')" oninput="setCustomValidity('')">
+                    
+                    <label for="address">Address</label><!--Taking Client Address-->
+                    <textarea name="address" required id="address" class="form-control" oninvalid="this.setCustomValidity('Enter the address')" oninput="setCustomValidity('')" rows="2">{{user.address}}</textarea>
+                    
+                    <button class="btn btn-outline-success" style="width:100%; margin: 5px;margin-left:0px;">Add Contractor</button>
+
+                </form>
+            </div>
+            
+        </div>
+        
+    </div>
+    <script>
+        window.onload = function(){
+            var alert_box = document.querySelector(".alert-box");
+            var i = 0;
+            {% with messages = get_flashed_messages(with_categories = True) %}
+                {% if messages %}
+                {% for category,message in messages %}
+                        var text = {{message|tojson}};
+                        var type = {{category|tojson}};
+                        var alert_html = '<div class=" col-lg-12 alert alert-'+ type +' fade show" role="alert"><span id="alt-item'+i+'"></span></div>'
+                        alert_box.insertAdjacentHTML("beforeend",alert_html);
+                        document.getElementById('alt-item'+i).innerHTML = text;
+                        i++;
+                    {% endfor %}
+                    {% endif %}
+            {% endwith %}
+        }
+
+        window.onbeforeunload = function(){
+            return confirm("Do you want to reload?")
+        }
+        </script>
+    {% endif %}
+{% endblock %}

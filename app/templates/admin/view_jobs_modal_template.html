@@ -1,0 +1,74 @@
+<div class="col-lg-12">
+    <!--Job heading start-->
+    <div class="my-1">
+        <span class="head-1 text-primary">{{ detail.job_title }}</span>
+        <span class="float-right">{{ job.jobid }}</span>
+        <div style="font-size:11px;">
+            <span style="font-weight: bold;">Posted on: </span><span>&nbsp;{{ detail.post_date }}</span>
+        </div>
+    </div>
+    <hr/>
+    <!--Job heading ends here-->
+
+    <!--Job Details starts here-->
+    <div class="mt-1">
+        <span style="font-weight: bold;">Client Name: </span><span>&nbsp;{{ detail.client_name }}</span>
+    </div>
+    <div class="mt-1">
+        <span style="font-weight: bold;">Contact Number: </span><a href='tel:{{ detail.contact_no }}'>&nbsp;{{ detail.contact_no }}</a>
+    </div>
+    <div class="mt-1">
+        <span style="font-weight: bold;">Work Date:</span><span>&nbsp;{{ detail.workdate }}</span>
+    </div>
+    <div class="mt-1">
+        <span style="font-weight: bold;">Job Details:</span>
+        <p>{{ detail.job_detail }}</p>
+    </div>
+    <div class="mt-1">
+        <span style="font-weight: bold;">Client Note:</span>
+        <p>{{ detail.client_note }}</p>
+    </div>
+    <div class="mt-1">
+        <span style="font-weight: bold;">Address:</span>
+        <p>{{ detail.address }}</p>
+    </div>
+    {% if start_date %}
+        <div class="mt-1">
+            <span style="font-weight: bold;">Start Date: </span><span>&nbsp;{{start_date}}</span>
+        </div>
+    {% endif %}
+    {% if status == 2 %}
+        <div class="mt-1">
+            <span style="font-weight: bold;">Complete Date: </span><span>&nbsp;{{end_date}}</span>
+        </div>
+    {% endif %}
+    {% if status >= 0 %}
+        <div class="mt-1">
+            <span style="font-weight: bold;">Status: </span><span class="text-{{status}}">&nbsp;{{current_status}}</span><br/>
+        </div>
+    {% endif %}
+    <!--Job Details Ends here-->
+
+    {% if user %}
+    <div class="col-lg-12 text-center head-2">Sub-Contractor</div>
+    <div class="mt-1">
+        <span style="font-weight: bold;">Contractor Id: </span><span id="contactorid">&nbsp;{{user.userid}}</span>
+    </div>
+    <div class="mt-1">
+        <span style="font-weight: bold;">Person: </span><span id="contactorid">&nbsp;{{user.business_contact_name}}</span>
+    </div>
+    <div class=" mt-1">
+        <span style="font-weight: bold;">ABN Number: </span><span id="abn">&nbsp;{{user.abn}}</span>
+    </div>
+    <div class="mt-1">
+        <span style="font-weight: bold;">Email: </span><a href="mailto:{{user.email}}" id="email">&nbsp;{{user.email}}</a>
+    </div>
+    <div class="mt-1">
+        <span style="font-weight: bold;">Sub-Contractor Cont. No.: </span><a href="tel:{{user.mob_number}}" id="sccontact">&nbsp;{{user.mob_number}}</a>
+    </div>
+    <div class="mt-1">
+        <span style="font-weight: bold;">Sub-Contractor Address: </span>
+        <p id="abn">{{user.address}}</p>
+    </div>
+    {% endif %}
+</div>

@@ -1,12 +1,13 @@
-from sqlalchemy import func
+from sqlalchemy import func, or_
 from app import db, login_manager
 from flask_login import UserMixin
 from passlib.hash import sha256_crypt as crypt
 from app import param
+from flask import flash
 import random
 import array
 import re
-from datetime import datetime
+from datetime import datetime, timedelta
 
 
 @login_manager.user_loader
@@ -14,32 +15,59 @@ def load_user(id):
     if is_admin(id):
         return AdminModal.query.get(id)
     else:
-        return Userlogin.query.filter(Userlogin.id == id, Userlogin.is_active == 1).first()
+        user = Userlogin.query.filter(Userlogin.id == id).first()
+        if user.is_active != 1:
+            flash("Your account has been deactivated","info")
+            return None
+        else:
+            return user
 
 def isdate(date):
-    if date is None or date == "":
-        return False
-    else:
-        regex = [r"\d{4}-\d{2}-\d{2}", r"\d{2}-\d{2}-\d{4}"]
-        for ex in regex:
-            match = re.match(ex, date)
-            if match:
-                return True
+    try:
+        if date is None or date == "":
+            return False
+        else:
+            regex = [r"\d{4}-\d{2}-\d{2}", r"\d{2}-\d{2}-\d{4}"]
+            for ex in regex:
+                match = re.match(ex, date)
+                if match:
+                    return True
+            return False
+    except:
         return False
 
 def is_admin(adminid):
-    split_list = adminid.split(".")
-    id, code = split_list[:2]
-    return len(split_list) == 2 and id.startswith("$") and code == "admin"
+    try:
+        split_list = adminid.split(".")
+        id, code = split_list[:2]
+        return len(split_list) == 2 and id.startswith("$") and code == "admin"
+    except:
+        return False
+
 
 def is_contractor(s):
-    # annup76779.knl0
-    regex = r"knl\d+"
-    contractor = str(s)
-    parts = contractor.split(".")
-    match = re.match(regex, parts[1])
-    sufix = match.group()
-    return len(parts) == 2 and parts[0].isalnum() and parts[1] == sufix 
+    try:
+        regex = r"knl\d+"
+        contractor = str(s)
+        parts = contractor.split(".")
+        match = re.match(regex, parts[1])
+        sufix = match.group()
+        return len(parts) == 2 and parts[0].isalnum() and parts[1] == sufix 
+    except:
+        return False
+
+def get_upcomming_seven_day_jobs(user):
+    try:
+        dates = []
+        for i in range(7):
+            dates.append((datetime.now() + timedelta(days=i)).date().strftime("%Y-%m-%d"))
+        jobs = db.session.query(Status, Jobs).outerjoin(Jobs, Status.jobid == Jobs.id).\
+            filter(or_(Jobs.workdate == dates[0], Jobs.workdate == dates[1], Jobs.workdate == dates[2], Jobs.workdate == dates[3], Jobs.workdate == dates[4], Jobs.workdate == dates[5], Jobs.workdate == dates[6]), Status.userid == user)\
+            .order_by(Jobs.post_date.desc(), Jobs.post_time.desc())
+        return jobs
+    except:
+        return None
+
 
 class AdminModal(UserMixin, db.Model):
     __tablename__  = "contractor"
@@ -77,7 +105,6 @@ class Userlogin(UserMixin,db.Model):
     is_active = db.Column(db.Integer, nullable = False, default = 1)
     details = db.relationship("Userdetail", backref = "userlogin", cascade = "all, delete-orphan", uselist = False)
     jobs = db.relationship("Status", backref = "user", cascade = "all, delete-orphan")
-    denied_jobs = db.relationship("DeniedJobs", backref = "denied") # last added line
 
     def generate_random_password(self):
         MAX_LEN = 12
@@ -192,11 +219,3 @@ class Status(db.Model):
     # 1 = accepted, 2 = Completed, 3 = Reassigned
     start_date = db.Column(db.String(35))
     end_date = db.Column(db.String(35))
-
-
-class DeniedJobs(db.Model):
-    __tablename__ = "deniedjobs"
-
-    id = db.Column(db.Integer, primary_key = True, autoincrement = True)
-    jobid = db.Column(db.Integer, db.ForeignKey("status.jobid"), nullable = False)
-    userid = db.Column(db.String(80), db.ForeignKey("userlogin.id"), nullable = False)

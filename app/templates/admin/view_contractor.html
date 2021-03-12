@@ -39,21 +39,19 @@
                 <th scope="col">Email Id</th>
                 <th scope="col">View</th>
                 <th scope="col">Edit</th>
-                <th scope="col">Delete</th>
             </tr>
         </thead>
         <tbody>
             {% if contractors %}
-                    {% for user in contractors.items %}
+                    {% for user in contractors %}
                         <tr>
                             <th scope="row">{{user.userid}}</th>
                             <td>{{ user.business_contact_name }}</td>
                             <td>{{ user.abn }}</td>
                             <td>{{ user.mob_number }}</td>
                             <td>{{ user.email }}</td>
-                            <td><a href="/admin/open/contractor/{{user.userid}}">View</a></td>
-                            <td><a href="#edit" onclick="openEditModal({{user.row_count}},this)">Edit</a></td>
-                            <td><a href="#del">Delete</a></td>
+                            <td><a href="/admin/open/contractor/{{user.userid}}" target="_blank">View</a></td>
+                            <td><a href="/admin/edit_contractor/{{user.userid}}" target="_blank">Edit</a></td>
                         </tr>
                     {% endfor %}
             {% endif %}
@@ -61,134 +59,6 @@
         </tbody>
     </table>
 </div>
-
-
-<!-- Modal to view jobs -->
-<div class="modal fade" id="viewJobsModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-<div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
-    <div class="modal-content">
-    <div class="modal-header">  
-        <h5 class="modal-title head-1 text-success" id="exampleModalLabel">Job Id: 78</h5><!--change the color of text by the status in Database-->
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-        <span aria-hidden="true">&times;</span>
-        </button>
-    </div>
-    <div class="modal-body">
-        <div class="col-lg-12">
-            <div class="row mt-1">
-                <span style="font-weight: bold;">Job Title: </span><span id="job-title">&nbsp;Glass Clean</span>
-            </div>
-            <div class="row mt-1">
-                <span style="font-weight: bold;">Client Name: </span><span id="client-name">&nbsp;Abhinav Srivastava</span>
-            </div>
-            <div class="row mt-1">
-                <span style="font-weight: bold;">Contact Number: </span><a href='tel:8948018686' id="contact-number">&nbsp;8948018686</a>
-            </div>
-            <div class="row mt-1">
-                <span style="font-weight: bold;">Work Date:</span><span id="work_date">&nbsp;04/04/2021</span>
-            </div>
-            <div class="row mt-1">
-                <span style="font-weight: bold;">Job Details:</span>
-                <p id="job-details">Hey there you have to clean all the widnow glasses in my building including glasses inside the rooms </p>
-            </div>
-            <div class="row mt-1">
-                <span style="font-weight: bold;">Client Note:</span>
-                <p id="note">Hey there you have to clean all the widnow glasses in my building including glasses inside the rooms </p>
-            </div>
-            <div class="row mt-1">
-                <span style="font-weight: bold;">Address:</span>
-                <p id="Address">Shakti Nagar, Pure Ishwarnath.</p>
-            </div>
-            <div class="row mt-1">
-                <span style="font-weight: bold;">Posted on: </span><span id="contact-number">&nbsp;02/04/2021</span>
-            </div>
-            <div class="row mt-1">
-                <span style="font-weight: bold;">Status: </span><span id="status">&nbsp;Accepted</span>
-            </div>
-            <div class="row mt-1">
-                <span style="font-weight: bold;">Contractor Id: </span><span id="contactorid">&nbsp;anup76779#</span>
-            </div>
-            <div class="row mt-1">
-                <span style="font-weight: bold;">Person: </span><span id="contactorid">&nbsp;Awantika Yadav</span>
-            </div>
-            <div class="row mt-1">
-                <span style="font-weight: bold;">ABN Number: </span><span id="abn">&nbsp;1234567891234567</span>
-            </div>
-            <div class="row mt-1">
-                <span style="font-weight: bold;">Email: </span><a href="mailto:annup76779@gmail.com" id="email">&nbsp;annup76779@gmail.com</a>
-            </div>
-            <div class="row mt-1">
-                <span style="font-weight: bold;">Sub-Contractor Cont. No.: </span><a href="tel:8726771497" id="sccontact">&nbsp;8726771497</a>
-            </div>
-            <div class="row mt-1">
-                <span style="font-weight: bold;">Sub-Contractor Address: </span>
-                <p id="abn">Dahilamau, Pratapgarh, UP</p>
-            </div>
-        </div>
-
-    </div>
-    <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-        <button type="button" class="btn btn-primary" data-dismiss="modal" onclick="openEditModal(3)">Edit</button>
-    </div>
-    </div>
-</div>
-</div>
-  
-<!-- Modal to edit Jobs-->
-<div class="modal fade" id="staticBackdrop-edit-contractor" data-backdrop="static" data-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
-<div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
-    <div class="modal-content">
-    <div class="modal-header">
-        <h5 class="modal-title text-success head-1" id="staticBackdropLabel">Contractor Id: annup76779</h5>
-        
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-        <span aria-hidden="true">&times;</span>
-        </button>
-    </div>
-    <div class="modal-body">
-        <span class="data-load"></span>
-        <div class="head-1" style="text-align: center; width: 100%;">Add Jobs</div>
-            <form action="/admin/post/contractor" method="post" id="add-contractor">
-                <label for="business">Business/Contact Name</label> <!--Taking Job title-->
-                <input type="text" name="business_contact_name" required id="business" class="form-control">
-
-                <label for="abn">ABN Number</label><!--Taking Client name of a job-->
-                <input type="number" name="abn" required id="abn" class="form-control" oninvalid="this.setCustomValidity('ABN Number Should be of 11 digits')" oninput="validateABN(this)">
-            
-                <label for="contact">Mobile Number</label><!--Taking contact number of the client-->
-                <div class="col-lg-12">
-                    <div class ="row">
-                        <div class="contact-number-feild">
-                        <div id="code"><!--Taking the country code of the client-->
-                            <select name="country-code" class= "form-control" oninvalid="this.setCustomValidity('Choose country')" oninput="validate_contact(this.value, document.getElementById('contact-number'))" id="contact">
-                                <option value="+91" selected>India</option>
-                                <option value="+61">Australia</option>
-                            </select>
-                        </div>
-                        <div id="number"><!--Taking client number-->
-                            <input type="number" id="contact-number" oninput="validate_contact(document.getElementById('contact').value, this)" required name="contact-no" class="form-control">
-                        </div>
-                        </div>
-                    </div>
-                </div>
-                <label for="email">Email</label><!--Taking Client name of a job-->
-                <input type="email" name="email" required id="email" class="form-control" oninvalid="this.setCustomValidity('Enter contractor\'s email')">
-                
-                <label for="address">Address</label><!--Taking Client Address-->
-                <textarea name="address" required id="address" class="form-control" oninvalid="this.setCustomValidity('Enter the address')" oninput="setCustomValidity('')" rows="2"></textarea>
-
-                <button class="btn btn-outline-success" style="width:100%; margin: 5px;margin-left:0px;">Add Contractor</button>
-
-            </form>
-    </div>
-    <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-    </div>
-    </div>
-</div>
-</div>
-
   
 <i class="fa fa-arrow-up back-to-top" title="back to top"></i>
 <style>
